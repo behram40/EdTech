@@ -1,0 +1,122 @@
+'use client'
+
+import { useState, useEffect } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
+import { 
+  PaperAirplaneIcon,
+  AcademicCapIcon,
+  ChartBarIcon,
+  ClockIcon,
+  LightBulbIcon,
+  StarIcon as StarIconSolid,
+  PlayCircleIcon,
+  BookOpenIcon,
+  DocumentTextIcon,
+  QuestionMarkCircleIcon,
+  XMarkIcon,
+  UserCircleIcon,
+  TrashIcon,
+  ChatBubbleLeftIcon,
+  PlusIcon,
+  ArrowPathIcon
+} from '@heroicons/react/24/outline'
+import Link from 'next/link'
+import { AIReportsSection } from './components/AIReportsSection'
+
+// ... copy all existing interfaces and mock data ...
+
+export default function StudentDashboard() {
+  const [showRecommendationDetails, setShowRecommendationDetails] = useState<number | null>(null)
+  const [isChatOpen, setIsChatOpen] = useState(true)
+  const [message, setMessage] = useState('')
+  const [userRole] = useState<'student' | 'teacher'>('student')
+  const [chatMessages, setChatMessages] = useState<ChatMessage[]>(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('chatMessages')
+      return saved ? JSON.parse(saved).map((msg: any) => ({
+        ...msg,
+        timestamp: new Date(msg.timestamp)
+      })) : []
+    }
+    return []
+  })
+  const [isTyping, setIsTyping] = useState(false)
+  const [isSupportOpen, setIsSupportOpen] = useState(false)
+  const [supportMessage, setSupportMessage] = useState('')
+  const [supportMessages, setSupportMessages] = useState<SupportMessage[]>(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('supportMessages')
+      return saved ? JSON.parse(saved).map((msg: any) => ({
+        ...msg,
+        timestamp: new Date(msg.timestamp)
+      })) : initialSupportMessages
+    }
+    return initialSupportMessages
+  })
+  const [isSupportTyping, setIsSupportTyping] = useState(false)
+  const [supportReplyCount, setSupportReplyCount] = useState(0)
+
+  // ... copy all existing useEffect and handler functions ...
+
+  return (
+    <div className="flex h-[calc(100vh-4rem)]">
+      {/* Main Dashboard Content */}
+      <div className="flex-1 overflow-y-auto p-6 space-y-6">
+        {/* Current Performance Summary */}
+        <div className="bg-white rounded-lg shadow-sm p-6">
+          <h2 className="text-lg font-medium text-gray-900 mb-4">Your Learning Journey</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="bg-indigo-50 rounded-lg p-4">
+              <h3 className="text-sm font-medium text-indigo-900 mb-2">Current Courses</h3>
+              <div className="space-y-3">
+                {studentPerformance.enrolledCourses.map(course => (
+                  <div key={course.id} className="flex justify-between items-center">
+                    <span className="text-sm text-indigo-700">{course.title}</span>
+                    <span className="text-sm font-medium text-indigo-900">{course.progress}%</span>
+                    {course.grade !== undefined && (
+                      <span className="text-sm text-gray-500">
+                        Grade: {course.grade}
+                      </span>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="bg-green-50 rounded-lg p-4">
+              <h3 className="text-sm font-medium text-green-900 mb-2">Areas of Strength</h3>
+              <div className="space-y-2">
+                {studentPerformance.strengths.map((strength, index) => (
+                  <div key={index} className="flex items-center">
+                    <StarIconSolid className="h-4 w-4 text-green-600 mr-2" />
+                    <span className="text-sm text-green-700">{strength}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* AI Progress Reports */}
+        <AIReportsSection userRole={userRole} />
+
+        {/* Recommended Lessons */}
+        <div className="bg-white rounded-lg shadow-sm p-6">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-lg font-medium text-gray-900">Recommended Lessons</h2>
+            <button
+              onClick={() => setShowRecommendationDetails(showRecommendationDetails === null ? -1 : null)}
+              className="text-sm text-indigo-600 hover:text-indigo-500"
+            >
+              {showRecommendationDetails === null ? 'Show Details' : 'Hide Details'}
+            </button>
+          </div>
+          // ... rest of the existing content ...
+        </div>
+
+        {/* ... rest of the existing sections ... */}
+      </div>
+
+      {/* ... rest of the existing components ... */}
+    </div>
+  )
+} 

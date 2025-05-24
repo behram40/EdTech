@@ -1,0 +1,90 @@
+@startuml EdTech Platform Database Schema
+
+!define table(x) class x << (T,#FFAAAA) >>
+!define primary_key(x) <b><u>x</u></b>
+!define foreign_key(x) <i>x</i>
+
+' Styling
+skinparam class {
+    BackgroundColor White
+    ArrowColor Black
+    BorderColor Black
+}
+
+skinparam linetype ortho
+
+' Tables
+table(users) {
+    primary_key(user_id): SERIAL
+    email: VARCHAR(255)
+    password_hash: VARCHAR(255)
+    first_name: VARCHAR(100)
+    last_name: VARCHAR(100)
+    role: VARCHAR(20)
+    created_at: TIMESTAMP
+    last_login: TIMESTAMP
+}
+
+table(courses) {
+    primary_key(course_id): SERIAL
+    title: VARCHAR(255)
+    description: TEXT
+    foreign_key(teacher_id): INTEGER
+    start_date: DATE
+    end_date: DATE
+    max_students: INTEGER
+    is_active: BOOLEAN
+}
+
+table(enrollments) {
+    primary_key(enrollment_id): SERIAL
+    foreign_key(student_id): INTEGER
+    foreign_key(course_id): INTEGER
+    enrollment_date: TIMESTAMP
+    status: VARCHAR(20)
+}
+
+table(assignments) {
+    primary_key(assignment_id): SERIAL
+    foreign_key(course_id): INTEGER
+    title: VARCHAR(255)
+    description: TEXT
+    due_date: TIMESTAMP
+    total_points: INTEGER
+    created_at: TIMESTAMP
+}
+
+table(submissions) {
+    primary_key(submission_id): SERIAL
+    foreign_key(assignment_id): INTEGER
+    foreign_key(student_id): INTEGER
+    submitted_at: TIMESTAMP
+    grade: DECIMAL(5,2)
+    feedback: TEXT
+    status: VARCHAR(20)
+}
+
+' Relationships
+users "1" -- "0..*" courses : teaches >
+users "1" -- "0..*" enrollments : has >
+courses "1" -- "0..*" enrollments : contains >
+courses "1" -- "0..*" assignments : has >
+users "1" -- "0..*" submissions : makes >
+assignments "1" -- "0..*" submissions : receives >
+
+' Notes
+note bottom of users
+  role can be: 'student', 'teacher', 'admin'
+  email is UNIQUE
+end note
+
+note bottom of enrollments
+  status can be: 'active', 'completed', 'dropped'
+  (student_id, course_id) is UNIQUE
+end note
+
+note bottom of submissions
+  status can be: 'submitted', 'graded', 'late'
+end note
+
+@enduml 

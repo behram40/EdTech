@@ -1,0 +1,170 @@
+@startuml EdTech Platform ER Diagram (Chen Notation)
+
+' Styling for Chen notation
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam roundCorner 0
+skinparam shadowing false
+
+' Entity definitions (rectangles)
+rectangle "User" as user
+rectangle "Course" as course
+rectangle "Assignment" as assignment
+rectangle "Submission" as submission
+rectangle "Enrollment" as enrollment
+
+' Attributes (ovals)
+circle "user_id" as user_id
+circle "email" as email
+circle "password" as password
+circle "name" as name
+circle "role" as role
+circle "created_at" as user_created
+
+circle "course_id" as course_id
+circle "title" as title
+circle "description" as desc
+circle "start_date" as start_date
+circle "end_date" as end_date
+circle "max_students" as max_students
+
+circle "assignment_id" as assign_id
+circle "due_date" as due_date
+circle "points" as points
+circle "created_at" as assign_created
+
+circle "submission_id" as sub_id
+circle "submitted_at" as submitted_at
+circle "grade" as grade
+circle "feedback" as feedback
+circle "status" as status
+
+circle "enrollment_id" as enroll_id
+circle "enroll_date" as enroll_date
+circle "enroll_status" as enroll_status
+
+' Relationships (diamonds)
+diamond "Teaches" as teaches
+diamond "Enrolls" as enrolls
+diamond "Contains" as contains
+diamond "Submits" as submits
+diamond "Receives" as receives
+
+' Connect attributes to entities
+user_id - user
+email - user
+password - user
+name - user
+role - user
+user_created - user
+
+course_id - course
+title - course
+desc - course
+start_date - course
+end_date - course
+max_students - course
+
+assign_id - assignment
+due_date - assignment
+points - assignment
+assign_created - assignment
+
+sub_id - submission
+submitted_at - submission
+grade - submission
+feedback - submission
+status - submission
+
+enroll_id - enrollment
+enroll_date - enrollment
+enroll_status - enrollment
+
+' Connect entities through relationships
+user -- teaches
+teaches -- course
+
+user -- enrolls
+enrolls -- course
+course -- contains
+contains -- assignment
+
+user -- submits
+submits -- assignment
+assignment -- receives
+receives -- submission
+
+' Cardinality
+user "1" -- "N" teaches
+teaches "N" -- "1" course
+
+user "1" -- "N" enrolls
+enrolls "N" -- "1" course
+course "1" -- "N" contains
+contains "N" -- "1" assignment
+
+user "1" -- "N" submits
+submits "N" -- "1" assignment
+assignment "1" -- "N" receives
+receives "N" -- "1" submission
+
+' Notes for constraints
+note bottom of user
+  role ∈ {'student', 'teacher', 'admin'}
+end note
+
+note bottom of enrollment
+  status ∈ {'active', 'completed', 'dropped'}
+end note
+
+note bottom of submission
+  status ∈ {'submitted', 'graded', 'late'}
+  grade range: 0.00 to 100.00
+end note
+
+' Layout hints
+together {
+    rectangle user
+    circle user_id
+    circle email
+    circle password
+    circle name
+    circle role
+    circle user_created
+}
+
+together {
+    rectangle course
+    circle course_id
+    circle title
+    circle desc
+    circle start_date
+    circle end_date
+    circle max_students
+}
+
+together {
+    rectangle assignment
+    circle assign_id
+    circle due_date
+    circle points
+    circle assign_created
+}
+
+together {
+    rectangle submission
+    circle sub_id
+    circle submitted_at
+    circle grade
+    circle feedback
+    circle status
+}
+
+together {
+    rectangle enrollment
+    circle enroll_id
+    circle enroll_date
+    circle enroll_status
+}
+
+@enduml 

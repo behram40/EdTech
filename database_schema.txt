@@ -1,0 +1,109 @@
+EdTech Platform Database Schema
+==============================
+
+Table Relationships:
+-------------------
+
+users
+  |
+  |--(1)----(N)---> enrollments <----(N)----(1)---> courses
+  |                                              |
+  |                                              |
+  |--(1)----(N)---> submissions <----(N)----(1)--+
+  |                                              |
+  |                                              |
+  +--(1)----(N)---> courses (as teacher)---------+
+
+Legend:
+(1) = One
+(N) = Many
+---> = Relationship
+
+Detailed Table Structure:
+------------------------
+
+users
+  ├── user_id (PK)
+  ├── email
+  ├── password_hash
+  ├── first_name
+  ├── last_name
+  ├── role
+  ├── created_at
+  └── last_login
+
+courses
+  ├── course_id (PK)
+  ├── title
+  ├── description
+  ├── teacher_id (FK -> users.user_id)
+  ├── start_date
+  ├── end_date
+  ├── max_students
+  └── is_active
+
+enrollments
+  ├── enrollment_id (PK)
+  ├── student_id (FK -> users.user_id)
+  ├── course_id (FK -> courses.course_id)
+  ├── enrollment_date
+  └── status
+
+assignments
+  ├── assignment_id (PK)
+  ├── course_id (FK -> courses.course_id)
+  ├── title
+  ├── description
+  ├── due_date
+  ├── total_points
+  └── created_at
+
+submissions
+  ├── submission_id (PK)
+  ├── assignment_id (FK -> assignments.assignment_id)
+  ├── student_id (FK -> users.user_id)
+  ├── submitted_at
+  ├── grade
+  ├── feedback
+  └── status
+
+Key Relationships:
+-----------------
+1. Users (Teachers) -> Courses: One-to-Many
+   - A teacher can teach multiple courses
+   - Each course has exactly one teacher
+
+2. Users (Students) -> Courses: Many-to-Many (via enrollments)
+   - Students can enroll in multiple courses
+   - Courses can have multiple students
+   - Enrollment table manages this relationship
+
+3. Users (Students) -> Assignments: Many-to-Many (via submissions)
+   - Students can submit multiple assignments
+   - Assignments can have multiple student submissions
+   - Submission table manages this relationship
+
+4. Courses -> Assignments: One-to-Many
+   - Each course can have multiple assignments
+   - Each assignment belongs to exactly one course
+
+Cardinality Rules:
+-----------------
+- A user can be either a student, teacher, or admin (role field)
+- A teacher can teach multiple courses
+- A student can enroll in multiple courses
+- A course can have multiple students
+- A course can have multiple assignments
+- A student can submit multiple assignments
+- An assignment can have multiple submissions
+- Each submission is linked to exactly one student and one assignment
+
+Notes:
+------
+- PK = Primary Key
+- FK = Foreign Key
+- All foreign keys have referential integrity constraints
+- Timestamps are in UTC
+- Status fields use CHECK constraints for valid values
+- Email addresses are unique per user
+- Student-course combinations are unique in enrollments 

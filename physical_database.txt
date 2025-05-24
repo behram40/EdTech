@@ -1,0 +1,57 @@
+EdTech Platform Database Tables
+=============================
+
+users
+-----
+• user_id (SERIAL) PK
+• email (VARCHAR(255)) UNIQUE
+• password_hash (VARCHAR(255))
+• first_name (VARCHAR(100))
+• last_name (VARCHAR(100))
+• role (VARCHAR(20))
+• created_at (TIMESTAMP)
+• last_login (TIMESTAMP)
+
+courses
+-------
+• course_id (SERIAL) PK
+• title (VARCHAR(255))
+• description (TEXT)
+• teacher_id (INTEGER) FK
+• start_date (DATE)
+• end_date (DATE)
+• max_students (INTEGER)
+• is_active (BOOLEAN)
+
+enrollments
+----------
+• enrollment_id (SERIAL) PK
+• student_id (INTEGER) FK
+• course_id (INTEGER) FK
+• enrollment_date (TIMESTAMP)
+• status (VARCHAR(20))
+
+assignments
+----------
+• assignment_id (SERIAL) PK
+• course_id (INTEGER) FK
+• title (VARCHAR(255))
+• description (TEXT)
+• due_date (TIMESTAMP)
+• total_points (INTEGER)
+• created_at (TIMESTAMP)
+
+submissions
+----------
+• submission_id (SERIAL) PK
+• assignment_id (INTEGER) FK
+• student_id (INTEGER) FK
+• submitted_at (TIMESTAMP)
+• grade (DECIMAL(5,2))
+• feedback (TEXT)
+• status (VARCHAR(20))
+
+Legend:
+PK = Primary Key
+FK = Foreign Key
+UNIQUE = Unique Constraint 
